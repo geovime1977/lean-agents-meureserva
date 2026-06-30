@@ -4,13 +4,11 @@ from src.models.user import criar_usuario, autenticar_usuario
 from src.models.achievements import iniciar_achievs
 
 
-if "login_tentativas" not in st.session_state:
-    st.session_state["login_tentativas"] = 0
-if "login_bloqueado_ate" not in st.session_state:
-    st.session_state["login_bloqueado_ate"] = 0
-
-
 def tela_login():
+    if "login_tentativas" not in st.session_state:
+        st.session_state["login_tentativas"] = 0
+    if "login_bloqueado_ate" not in st.session_state:
+        st.session_state["login_bloqueado_ate"] = 0
     st.title("💰 Assistente Financeiro")
     st.subheader("Faça seu login")
 
