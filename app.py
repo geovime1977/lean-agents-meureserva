@@ -10,7 +10,8 @@ from src.views.budget import renderizar as budget
 from src.views.transactions import renderizar as transactions
 from src.views.pix import renderizar as pix
 from src.views.goals import renderizar as goals
-from src.services.subscription import verificar_premium, ativar_premium, CHAVE_PIX_ASSINATURA, VALOR_ASSINATURA
+from src.services.subscription import verificar_premium, ativar_premium, VALOR_ASSINATURA
+from src.services.pagamento import criar_cobranca, verificar_cobranca_pendente, cobrancas_do_usuario, confirmar_pagamento
 from src.models.user import atualizar_renda
 from src.models.achievements import BADGES_INFO
 
@@ -61,27 +62,39 @@ with st.sidebar:
         st.success("✅ Premium")
     else:
         st.warning("🔒 Gratuito")
-        with st.expander("Assinar R$ 9,90/mês"):
-            st.write(f"Chave Pix: {CHAVE_PIX_ASSINATURA}")
-            st.code(
-                f"Pix copia-e-cola:\n{CHAVE_PIX_ASSINATURA}",
-                language="text",
-            )
-            st.write("Após pagar, solicite ativação manual.")
-            chave = st.text_input("Chave de ativação", placeholder="Código recebido")
-            if st.button("Ativar", use_container_width=True):
-                secret_key = os.getenv('SECRET_PREMIUM_KEY')
-                if secret_key:
-                    valida = chave.strip() == secret_key
-                else:
-                    token = hashlib.sha256(f"{usuario['email']}_{date.today()}".encode()).hexdigest()[:12]
-                    valida = chave.strip() == token
-                if valida:
-                    until = ativar_premium(usuario["id"])
-                    st.success(f"Premium ativo até {until}")
+        with st.expander(f"⭐ Premium R$ 9,90/mês"):
+            pendente = verificar_cobranca_pendente(usuario["id"])
+            if pendente:
+                st.info("Pagamento pendente")
+                from src.services.pagamento import gerar_qrcode_base64, gerar_payload_pix
+                payload = gerar_payload_pix(VALOR_ASSINATURA, "Premium MeuReserva 30d", pendente["txid"])
+                qrcode_b64 = gerar_qrcode_base64(payload)
+                from PIL import Image
+                import io, base64
+                st.image(f"data:image/png;base64,{qrcode_b64}", width=200)
+                st.code(payload, language="text", label="Pix copia-e-cola")
+                if st.button("Ja paguei!", use_container_width=True, type="primary"):
+                    if confirmar_pagamento(usuario["id"], pendente["txid"]):
+                        st.success("Premium ativado!")
+                        st.rerun()
+                    else:
+                        st.error("Nao encontramos o pagamento. Tente novamente.")
+                if st.button("Cancelar"):
+                    from src.utils.db import get_connection
+                    conn = get_connection()
+                    conn.execute("UPDATE cobrancas SET status='expirado' WHERE id=?", (pendente["id"],))
+                    conn.commit()
+                    conn.close()
                     st.rerun()
-                else:
-                    st.error("Chave inválida")
+            else:
+                if st.button("Assinar agora", use_container_width=True, type="primary"):
+                    cobranca = criar_cobranca(usuario["id"])
+                    st.rerun()
+                cobrancas = cobrancas_do_usuario(usuario["id"])
+                if cobrancas:
+                    for c in cobrancas[:3]:
+                        status = "✅ Pago" if c["status"] == "pago" else "❌ Expirado" if c["status"] == "expirado" else "⏳ Pendente"
+                        st.caption(f"{status} - {c['criado_em'][:10]}")
 
     st.divider()
 

@@ -90,6 +90,17 @@ def init_db():
             desbloqueado INTEGER DEFAULT 0,
             FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
         );
+
+        CREATE TABLE IF NOT EXISTS cobrancas (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            usuario_id INTEGER NOT NULL,
+            txid TEXT NOT NULL,
+            valor REAL NOT NULL,
+            status TEXT DEFAULT 'pendente' CHECK(status IN ('pendente','pago','expirado')),
+            criado_em TEXT NOT NULL,
+            pago_em TEXT,
+            FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+        );
     """)
     conn.commit()
     conn.close()
