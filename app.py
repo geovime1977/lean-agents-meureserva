@@ -72,7 +72,8 @@ with st.sidebar:
                 from PIL import Image
                 import io, base64
                 st.image(f"data:image/png;base64,{qrcode_b64}", width=200)
-                st.code(payload, language="text", label="Pix copia-e-cola")
+                st.caption("Pix copia-e-cola:")
+                st.code(payload, language="text")
                 if st.button("Ja paguei!", use_container_width=True, type="primary"):
                     if confirmar_pagamento(usuario["id"], pendente["txid"]):
                         st.success("Premium ativado!")
