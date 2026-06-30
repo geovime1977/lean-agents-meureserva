@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="App que divide seu salario em 50/30/20 automaticamente e agenda micro-reservas via Pix. Foco em salario minimo. R$ 9,90/mes.">
+  <meta name="keywords" content="app controle gastos, orcamento 50 30 20, reserva emergencia pix, educacao financeira baixa renda">
+  <title>MeuReserva</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6; color: #1a1a2e; background: #f8f9fa;
+    }
+    .container { max-width: 800px; margin: 0 auto; padding: 2rem; }
+    header {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      color: #fff; padding: 4rem 2rem; text-align: center;
+    }
+    header h1 { font-size: 2.5rem; margin-bottom: 1rem; }
+    header p { font-size: 1.2rem; opacity: 0.9; margin-bottom: 2rem; }
+    .cta-btn {
+      display: inline-block; background: #e94560; color: #fff;
+      padding: 1rem 2.5rem; border-radius: 50px; font-size: 1.2rem;
+      text-decoration: none; font-weight: 600; transition: transform 0.2s;
+    }
+    .cta-btn:hover { transform: scale(1.05); }
+    .price {
+      font-size: 2rem; font-weight: 700; color: #e94560; margin: 1rem 0;
+    }
+    .section { padding: 3rem 0; border-bottom: 1px solid #e0e0e0; }
+    .section h2 { font-size: 1.8rem; margin-bottom: 1.5rem; color: #1a1a2e; }
+    .benefits { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    .benefit {
+      background: #fff; padding: 1.5rem; border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .benefit h3 { color: #16213e; margin-bottom: 0.5rem; }
+    footer { text-align: center; padding: 2rem; color: #666; font-size: 0.9rem; }
+    @media (max-width: 600px) { .benefits { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>MeuReserva</h1>
+      <p>Seu dinheiro nao acaba antes do mes. A gente so te ajuda a dividir.</p>
+      <div class="price">R$ 9,90 / mes</div>
+      <a href="#" class="cta-btn">Quero guardar dinheiro</a>
+    </div>
+  </header>
+
+  <section class="section">
+    <div class="container">
+      <h2>Para quem e isso?</h2>
+      <p>Para quem ganha 1 a 2 salarios minimos e nunca conseguiu guardar dinheiro. Sem planilha, sem banco digital, sem culpa.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2>O que voce vai levar</h2>
+      <div class="benefits">
+        <div class="benefit"><h3>50/30/20 Automatico</h3><p>O app calcula exatamente quanto vai pra contas, lazer e reserva com base no seu salario. Nada de chute.</p></div>
+        <div class="benefit"><h3>Micro-reserva via Pix</h3><p>Agende transferencias de R$ 5 a R$ 50 por dia ou semana. Automatizado pra voce nao esquecer.</p></div>
+        <div class="benefit"><h3>Gamificacao que funciona</h3><p>Metas, streaks e badges. Cada dia guardando e uma conquista. Parece jogo, mas e dinheiro real.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2>O que estão falando</h2>
+      <p>"Baixei o app e em 15 dias ja tinha R$ 80 separados sem sentir. Parece magica, mas e 50/30/20." — usuario do MeuReserva</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container" style="text-align: center;">
+      <h2>Nao perca tempo</h2>
+      <p style="margin-bottom: 1.5rem;">R$ 9,90 por mes. Menos que um ifood. Se em 30 dias voce nao tiver pelo menos R$ 50 guardados, a gente devolve.</p>
+      <div class="price">R$ 9,90 / mes</div>
+      <a href="#" class="cta-btn">Quero guardar dinheiro</a>
+    </div>
+  </section>
+
+  <footer>
+    <p>MeuReserva — Assistente Financeiro. Nao e banco, nao faz emprestimo, nao vende seus dados.</p>
+  </footer>
+</body>
+</html>
