@@ -10,21 +10,41 @@ from src.services.subscription import ativar_premium, VALOR_ASSINATURA
 
 CHAVE_PIX = "21970237295"
 
+
+def tlv(tag, valor):
+    return f"{tag}{len(valor):02d}{valor}"
+
+
 def gerar_payload_pix(valor, descricao, txid):
-    payload = "00020126"
-    gui = "0014br.gov.bcb.pix"
-    payload += f"{len(gui):02d}{gui}"
-    chave_len = len(CHAVE_PIX)
-    payload += f"01{chave_len:02d}{CHAVE_PIX}"
-    payload += f"02{len(descricao):02d}{descricao}"
+    gui = tlv("00", "br.gov.bcb.pix")
+    chave = tlv("01", CHAVE_PIX)
+    desc = tlv("02", descricao[:20])
+    merchant_account = gui + chave + desc
+    merchant_account_field = f"26{len(merchant_account):02d}{merchant_account}"
+
     valor_str = f"{valor:.2f}"
-    payload += f"54{len(valor_str):02d}{valor_str}"
-    payload += "5802BR"
-    payload += f"59{len('MeuReserva'):02d}MeuReserva"
-    payload += "60" + f"{len('BR'):02d}BR"
+    amount = tlv("54", valor_str)
+    country = "5802BR"
+    merchant_name = tlv("59", "MeuReserva")
+    merchant_city = tlv("60", "BR")
+
     txid_curto = txid[:25]
-    payload += f"62{len(txid_curto)+8:02d}05{len(txid_curto):02d}{txid_curto}"
-    payload += "6304"
+    txid_field = tlv("05", txid_curto)
+    additional = tlv("62", txid_field)
+
+    payload = (
+        "000201"
+        + merchant_account_field
+        + "52040000"
+        + "5303986"
+        + amount
+        + country
+        + merchant_name
+        + merchant_city
+        + additional
+        + "6304"
+    )
+
     crc = calcular_crc16(payload)
     return payload + crc
 
