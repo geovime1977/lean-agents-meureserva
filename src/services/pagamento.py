@@ -8,29 +8,23 @@ from src.utils.db import get_connection
 from src.services.pix_scheduler import calcular_crc16
 from src.services.subscription import ativar_premium, VALOR_ASSINATURA
 
-CHAVE_PIX = "21970237295"
+CHAVE_PIX = "+5521970237295"
 
 
 def tlv(tag, valor):
     return f"{tag}{len(valor):02d}{valor}"
 
 
-def gerar_payload_pix(valor, descricao, txid):
+def gerar_payload_pix(valor, txid):
     gui = tlv("00", "br.gov.bcb.pix")
     chave = tlv("01", CHAVE_PIX)
-    desc = tlv("02", descricao[:20])
-    merchant_account = gui + chave + desc
+    merchant_account = gui + chave
     merchant_account_field = f"26{len(merchant_account):02d}{merchant_account}"
 
     valor_str = f"{valor:.2f}"
     amount = tlv("54", valor_str)
-    country = "5802BR"
     merchant_name = tlv("59", "MeuReserva")
     merchant_city = tlv("60", "BR")
-
-    txid_curto = txid[:25]
-    txid_field = tlv("05", txid_curto)
-    additional = tlv("62", txid_field)
 
     payload = (
         "000201"
@@ -38,10 +32,9 @@ def gerar_payload_pix(valor, descricao, txid):
         + "52040000"
         + "5303986"
         + amount
-        + country
+        + "5802BR"
         + merchant_name
         + merchant_city
-        + additional
         + "6304"
     )
 
@@ -64,7 +57,7 @@ def criar_cobranca(usuario_id):
     conn.commit()
     conn.close()
 
-    payload = gerar_payload_pix(VALOR_ASSINATURA, "Premium MeuReserva 30d", txid)
+    payload = gerar_payload_pix(VALOR_ASSINATURA, txid)
     qrcode_b64 = gerar_qrcode_base64(payload)
     return {"txid": txid, "payload": payload, "qrcode": qrcode_b64, "valor": VALOR_ASSINATURA, "chave_pix": CHAVE_PIX}
 

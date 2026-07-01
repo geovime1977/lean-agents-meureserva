@@ -67,7 +67,7 @@ with st.sidebar:
             if pendente:
                 st.info("Pagamento pendente")
                 from src.services.pagamento import gerar_qrcode_base64, gerar_payload_pix
-                payload = gerar_payload_pix(VALOR_ASSINATURA, "Premium MeuReserva 30d", pendente["txid"])
+                payload = gerar_payload_pix(VALOR_ASSINATURA, pendente["txid"])
                 qrcode_b64 = gerar_qrcode_base64(payload)
                 from PIL import Image
                 import io, base64
