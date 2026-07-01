@@ -42,7 +42,15 @@ def gerar_payload_pix(valor, txid):
     return payload + crc
 
 def gerar_qrcode_base64(payload):
-    img = qrcode.make(payload)
+    qr = qrcode.QRCode(
+        version=4,
+        error_correction=qrcode.constants.ERROR_CORRECT_M,
+        box_size=8,
+        border=4,
+    )
+    qr.add_data(payload)
+    qr.make(fit=True)
+    img = qr.make_image(fill_color="black", back_color="white")
     buf = io.BytesIO()
     img.save(buf, format="PNG")
     return base64.b64encode(buf.getvalue()).decode()
